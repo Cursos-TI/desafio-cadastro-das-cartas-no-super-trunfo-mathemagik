@@ -1,11 +1,12 @@
 #include <stdio.h>
+#include <stdbool.h>
 
 int main() {
     // Variáveis para a primeira carta
     char estado1;
     char codigo1[4];
     char cidade1[50];
-    unsigned long populacao1;  // Alterado para unsigned long
+    unsigned long populacao1;
     float area1;
     float pib1;
     int pontos_turisticos1;
@@ -17,7 +18,7 @@ int main() {
     char estado2;
     char codigo2[4];
     char cidade2[50];
-    unsigned long populacao2;  // Alterado para unsigned long
+    unsigned long populacao2;
     float area2;
     float pib2;
     int pontos_turisticos2;
@@ -36,7 +37,7 @@ int main() {
     printf("Nome da Cidade: ");
     scanf(" %49[^\n]", cidade1);
     printf("População: ");
-    scanf("%lu", &populacao1);  // %lu para unsigned long
+    scanf("%lu", &populacao1);
     printf("Área (km²): ");
     scanf("%f", &area1);
     printf("PIB (bilhões de reais): ");
@@ -55,7 +56,7 @@ int main() {
     printf("Nome da Cidade: ");
     scanf(" %49[^\n]", cidade2);
     printf("População: ");
-    scanf("%lu", &populacao2);  // %lu para unsigned long
+    scanf("%lu", &populacao2);
     printf("Área (km²): ");
     scanf("%f", &area2);
     printf("PIB (bilhões de reais): ");
@@ -104,13 +105,14 @@ int main() {
     printf("PIB per Capita: %.2f reais\n", pib_percapita2);
     printf("Super Poder: %.2f\n", superpoder2);
 
+    // Menu interativo para escolha dos atributos
+    int opcao1, opcao2;
+    bool opcoes_disponiveis[8] = {false, true, true, true, true, true, true, true}; // índice 0 não usado, 1 a 7 disponíveis
 
- // Menu interativo para escolha do atributo
-    int opcao;
     printf("\n-------------------------------------\n");
-    printf("MENU DE COMPARAÇÃO\n");
+    printf("ESCOLHA DO PRIMEIRO ATRIBUTO\n");
     printf("-------------------------------------\n");
-    printf("Escolha o atributo para comparar:\n");
+    printf("Selecione o primeiro atributo para comparação:\n");
     printf("1 - População\n");
     printf("2 - Área\n");
     printf("3 - PIB\n");
@@ -119,87 +121,109 @@ int main() {
     printf("6 - PIB per Capita\n");
     printf("7 - Super Poder\n");
     printf("Opção: ");
-    scanf("%d", &opcao);
+    scanf("%d", &opcao1);
 
-    // Variáveis para comparação
-    char* atributo = "";
-    float valor1 = 0, valor2 = 0;
-    int regra_normal = 1; // 1 = maior vence, 0 = menor vence
+    // Validar a primeira opção
+    if (opcao1 < 1 || opcao1 > 7) {
+        printf("Opção inválida!\n");
+        return 1;
+    }
+    opcoes_disponiveis[opcao1] = false; // marca como indisponível
 
-    // Seleção do atributo
-    switch(opcao) {
-        case 1:
-            atributo = "População";
-            valor1 = (float)populacao1;
-            valor2 = (float)populacao2;
-            regra_normal = 1;
-            break;
-        case 2:
-            atributo = "Área";
-            valor1 = area1;
-            valor2 = area2;
-            regra_normal = 1;
-            break;
-        case 3:
-            atributo = "PIB";
-            valor1 = pib1;
-            valor2 = pib2;
-            regra_normal = 1;
-            break;
-        case 4:
-            atributo = "Pontos Turísticos";
-            valor1 = (float)pontos_turisticos1;
-            valor2 = (float)pontos_turisticos2;
-            regra_normal = 1;
-            break;
-        case 5:
-            atributo = "Densidade Demográfica";
-            valor1 = densidade1;
-            valor2 = densidade2;
-            regra_normal = 0; // Menor valor vence
-            break;
-        case 6:
-            atributo = "PIB per Capita";
-            valor1 = pib_percapita1;
-            valor2 = pib_percapita2;
-            regra_normal = 1;
-            break;
-        case 7:
-            atributo = "Super Poder";
-            valor1 = superpoder1;
-            valor2 = superpoder2;
-            regra_normal = 1;
-            break;
-        default:
-            printf("Opção inválida!\n");
-            return 1;
+    // Menu para o segundo atributo (opções dinâmicas)
+    printf("\n-------------------------------------\n");
+    printf("ESCOLHA DO SEGUNDO ATRIBUTO\n");
+    printf("-------------------------------------\n");
+    printf("Selecione o segundo atributo para comparação:\n");
+    if (opcoes_disponiveis[1]) printf("1 - População\n");
+    if (opcoes_disponiveis[2]) printf("2 - Área\n");
+    if (opcoes_disponiveis[3]) printf("3 - PIB\n");
+    if (opcoes_disponiveis[4]) printf("4 - Pontos Turísticos\n");
+    if (opcoes_disponiveis[5]) printf("5 - Densidade Demográfica\n");
+    if (opcoes_disponiveis[6]) printf("6 - PIB per Capita\n");
+    if (opcoes_disponiveis[7]) printf("7 - Super Poder\n");
+    printf("Opção: ");
+    scanf("%d", &opcao2);
+
+    // Validar a segunda opção
+    if (opcao2 < 1 || opcao2 > 7 || !opcoes_disponiveis[opcao2]) {
+        printf("Opção inválida ou repetida!\n");
+        return 1;
     }
 
-    // Exibição da comparação
+    // Variáveis para os atributos selecionados
+    char* atributos[2];
+    float valores1[2], valores2[2];
+    int regras[2]; // 1 = maior vence, 0 = menor vence
+
+    // Função para definir atributos usando operador ternário
+    #define DEFINIR_ATRIBUTO(opcao, nome, val1, val2, regra) \
+        do { \
+            if (opcao == opcao1 || opcao == opcao2) { \
+                int idx = (opcao == opcao1) ? 0 : 1; \
+                atributos[idx] = nome; \
+                valores1[idx] = val1; \
+                valores2[idx] = val2; \
+                regras[idx] = regra; \
+            } \
+        } while(0)
+
+    // Definir os atributos selecionados
+    DEFINIR_ATRIBUTO(1, "População", (float)populacao1, (float)populacao2, 1);
+    DEFINIR_ATRIBUTO(2, "Área", area1, area2, 1);
+    DEFINIR_ATRIBUTO(3, "PIB", pib1, pib2, 1);
+    DEFINIR_ATRIBUTO(4, "Pontos Turísticos", (float)pontos_turisticos1, (float)pontos_turisticos2, 1);
+    DEFINIR_ATRIBUTO(5, "Densidade Demográfica", densidade1, densidade2, 0);
+    DEFINIR_ATRIBUTO(6, "PIB per Capita", pib_percapita1, pib_percapita2, 1);
+    DEFINIR_ATRIBUTO(7, "Super Poder", superpoder1, superpoder2, 1);
+
+    #undef DEFINIR_ATRIBUTO
+
+    // Calcular soma dos atributos
+    float soma1 = valores1[0] + valores1[1];
+    float soma2 = valores2[0] + valores2[1];
+
+    // Exibição dos resultados
     printf("\n-------------------------------------\n");
     printf("RESULTADO DA COMPARAÇÃO\n");
     printf("-------------------------------------\n");
-    printf("Atributo escolhido: %s\n", atributo);
-    printf("%s: %.2f\n", cidade1, valor1);
-    printf("%s: %.2f\n", cidade2, valor2);
-
-    // Determinação do vencedor
-    if (regra_normal) {
-        if (valor1 > valor2) {
-            printf("Vencedor: %s\n", cidade1);
-        } else if (valor2 > valor1) {
-            printf("Vencedor: %s\n", cidade2);
-        } else {
-            printf("Empate!\n");
-        }
-    } else {
-        if (valor1 < valor2) {
-            printf("Vencedor: %s\n", cidade1);
-        } else if (valor2 < valor1) {
-            printf("Vencedor: %s\n", cidade2);
-        } else {
-            printf("Empate!\n");
-        }
+    printf("Carta 1: %s\n", cidade1);
+    printf("Carta 2: %s\n\n", cidade2);
+    
+    printf("Atributos selecionados:\n");
+    printf("1. %s\n", atributos[0]);
+    printf("2. %s\n\n", atributos[1]);
+    
+    printf("Comparação por atributo:\n");
+    for (int i = 0; i < 2; i++) {
+        printf("- %s:\n", atributos[i]);
+        printf("  %s: %.2f\n", cidade1, valores1[i]);
+        printf("  %s: %.2f\n", cidade2, valores2[i]);
+        
+        // Determinar vencedor do atributo com operador ternário
+        char* vencedor = 
+            (regras[i] == 1) ? 
+                ((valores1[i] > valores2[i]) ? cidade1 : 
+                (valores2[i] > valores1[i]) ? cidade2 : "Empate") :
+                ((valores1[i] < valores2[i]) ? cidade1 : 
+                (valores2[i] < valores1[i]) ? cidade2 : "Empate");
+                
+        printf("  Vencedor: %s\n\n", vencedor);
     }
+    
+    printf("Soma dos atributos:\n");
+    printf("%s: %.2f\n", cidade1, soma1);
+    printf("%s: %.2f\n\n", cidade2, soma2);
+    
+    // Determinar vencedor final
+    if (soma1 > soma2) {
+        printf("VENCEDOR FINAL: %s\n", cidade1);
+    } else if (soma2 > soma1) {
+        printf("VENCEDOR FINAL: %s\n", cidade2);
+    } else {
+        printf("EMPATE FINAL!\n");
+    }
+    printf("-------------------------------------\n");
+
     return 0;
 }
