@@ -104,26 +104,102 @@ int main() {
     printf("PIB per Capita: %.2f reais\n", pib_percapita2);
     printf("Super Poder: %.2f\n", superpoder2);
 
-    // Comparação entre as cartas
-    printf("\n-------------------------------------\n");
-    printf("COMPARAÇÃO ENTRE CARTAS:\n");
-    printf("-------------------------------------\n");
-    printf("População: %d\n", (populacao1 > populacao2) ? 1 : 0);
-    printf("Área: %d\n", (area1 > area2) ? 1 : 0);
-    printf("PIB: %d\n", (pib1 > pib2) ? 1 : 0);
-    printf("Pontos Turísticos: %d\n", (pontos_turisticos1 > pontos_turisticos2) ? 1 : 0);
-    printf("Densidade: %d\n", (densidade1 < densidade2) ? 1 : 0);  // Menor valor vence
-    printf("PIB per Capita: %d\n", (pib_percapita1 > pib_percapita2) ? 1 : 0);
-    printf("Super Poder: %d\n", (superpoder1 > superpoder2) ? 1 : 0);
-    printf("-------------------------------------\n");
 
-    printf("Comparação de Superpoderes: \n")
-    if(superpoder1> superpoder2){
-        printf("A carta 1 venceu!\n");
-    }else if( superpoder1 == superpoder2){
-        printf("As cartas empataram!\n");
-    }else{
-        printf("A carta 2 venceu!\n");
+ // Menu interativo para escolha do atributo
+    int opcao;
+    printf("\n-------------------------------------\n");
+    printf("MENU DE COMPARAÇÃO\n");
+    printf("-------------------------------------\n");
+    printf("Escolha o atributo para comparar:\n");
+    printf("1 - População\n");
+    printf("2 - Área\n");
+    printf("3 - PIB\n");
+    printf("4 - Pontos Turísticos\n");
+    printf("5 - Densidade Demográfica\n");
+    printf("6 - PIB per Capita\n");
+    printf("7 - Super Poder\n");
+    printf("Opção: ");
+    scanf("%d", &opcao);
+
+    // Variáveis para comparação
+    char* atributo = "";
+    float valor1 = 0, valor2 = 0;
+    int regra_normal = 1; // 1 = maior vence, 0 = menor vence
+
+    // Seleção do atributo
+    switch(opcao) {
+        case 1:
+            atributo = "População";
+            valor1 = (float)populacao1;
+            valor2 = (float)populacao2;
+            regra_normal = 1;
+            break;
+        case 2:
+            atributo = "Área";
+            valor1 = area1;
+            valor2 = area2;
+            regra_normal = 1;
+            break;
+        case 3:
+            atributo = "PIB";
+            valor1 = pib1;
+            valor2 = pib2;
+            regra_normal = 1;
+            break;
+        case 4:
+            atributo = "Pontos Turísticos";
+            valor1 = (float)pontos_turisticos1;
+            valor2 = (float)pontos_turisticos2;
+            regra_normal = 1;
+            break;
+        case 5:
+            atributo = "Densidade Demográfica";
+            valor1 = densidade1;
+            valor2 = densidade2;
+            regra_normal = 0; // Menor valor vence
+            break;
+        case 6:
+            atributo = "PIB per Capita";
+            valor1 = pib_percapita1;
+            valor2 = pib_percapita2;
+            regra_normal = 1;
+            break;
+        case 7:
+            atributo = "Super Poder";
+            valor1 = superpoder1;
+            valor2 = superpoder2;
+            regra_normal = 1;
+            break;
+        default:
+            printf("Opção inválida!\n");
+            return 1;
+    }
+
+    // Exibição da comparação
+    printf("\n-------------------------------------\n");
+    printf("RESULTADO DA COMPARAÇÃO\n");
+    printf("-------------------------------------\n");
+    printf("Atributo escolhido: %s\n", atributo);
+    printf("%s: %.2f\n", cidade1, valor1);
+    printf("%s: %.2f\n", cidade2, valor2);
+
+    // Determinação do vencedor
+    if (regra_normal) {
+        if (valor1 > valor2) {
+            printf("Vencedor: %s\n", cidade1);
+        } else if (valor2 > valor1) {
+            printf("Vencedor: %s\n", cidade2);
+        } else {
+            printf("Empate!\n");
+        }
+    } else {
+        if (valor1 < valor2) {
+            printf("Vencedor: %s\n", cidade1);
+        } else if (valor2 < valor1) {
+            printf("Vencedor: %s\n", cidade2);
+        } else {
+            printf("Empate!\n");
+        }
     }
     return 0;
 }
