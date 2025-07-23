@@ -118,13 +118,12 @@ int main() {
     printf("-------------------------------------\n");
 
     printf("Comparação de Superpoderes: \n")
-    printf()
     if(superpoder1> superpoder2){
-        printf("A carta 1 venceu!\n")
+        printf("A carta 1 venceu!\n");
     }else if( superpoder1 == superpoder2){
-        printf("As cartas empataram!\n")
+        printf("As cartas empataram!\n");
     }else{
-        printf("A carta 2 venceu!\n")
+        printf("A carta 2 venceu!\n");
     }
     return 0;
 }
